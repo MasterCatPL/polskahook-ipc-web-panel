@@ -181,7 +181,7 @@ function updateIPCData(row, id, data) {
 	row.find('.client-hsrate').text(hsrate + '%');
 	if (data.connected) {
 		row.toggleClass('disconnected', false);
-		row.find('.client-uptime-server').text(format(Date.now() - data.ts_connected /= 1000));
+		row.find('.client-uptime-server').text(format(Date.now() - data.ts_connected * 1000));
 		if (data.ts_disconnected) {
 			row.find('.client-uptime-queue').text(format(1000 * (data.ts_connected - data.ts_disconnected)));
 		}
