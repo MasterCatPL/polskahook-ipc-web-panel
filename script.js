@@ -3,15 +3,15 @@ const format = require('format-duration');
 const request = require('browser-request');
 
 const STATE = [ 
-	'INITIALIZING',
-	'INITIALIZED',
-	'PREPARING',
-	'STARTING',
-	'WAITING',
-	'RUNNING',
-	'RESTARTING',
-	'STOPPING',
-	'NO ACCOUNT'
+	'Initializing',
+	'Initialized',
+	'Preparing',
+	'Starting',
+	'Waiting',
+	'Running',
+	'Restarting',
+	'Stopping',
+	'No Account'
 ];
 
 const classes = [
@@ -169,7 +169,7 @@ function updateIPCData(row, id, data) {
 		}
 		row.find('.client-status').removeClass('warning').addClass('error').text('Likely dead ' + time);
 	}
-	//row.find('.client-uptime').text(format(time - data.starttime));
+	//row.find('.client-uptime').text(format(time - data.ts_injected));
 	row.find('.client-pid').text(data.pid);
 	row.find('.client-id').text(id);
 	row.find('.client-name').text(data.name);
@@ -179,6 +179,8 @@ function updateIPCData(row, id, data) {
 	row.find('.client-shots').text(data.accumulated.shots);
 	row.find('.client-hitrate').text(hitrate + '%');
 	row.find('.client-hsrate').text(hsrate + '%');
+	row.find('.client-uptime-total').text(format(Date.now() - data.ts_injected * 1000));
+
 	if (data.connected) {
 		row.toggleClass('disconnected', false);
 		row.find('.client-uptime-server').text(format(Date.now() - data.ts_connected * 1000));
@@ -210,10 +212,9 @@ function updateUserData(bot, data) {
 	if (!row.length) return;
 	row.toggleClass('stopped', data.state != 5);
 	row.find('.client-state').text(STATE[data.state]);
-	if (data.state == 5 && data.ipc) {
+	if (data.state === 5 && data.ipc) {
 		row.attr('data-pid', data.ipc.pid);
 		row.find('.client-pid').text(data.ipc.pid);
-		row.find('.client-uptime-total').text(format(Date.now() - data.started));
         row.find('.client-restarts').text(data.restarts);
         row.find('.client-steam').empty().append($('<a></a>').text('Profile').attr('href', `https://steamcommunity.com/profiles/[U:1:${data.ipc.friendid}]`).attr('target', '_blank'));
 	}
@@ -289,7 +290,7 @@ $(function() {
     status.info('init done');
 	setInterval(updateData, 1000 * 2);
 	$('#console').on('keypress', function(e) {
-		if (e.keyCode == '13') {
+		if (e.keyCode === '13') {
 			runCommand();
 			e.preventDefault();
 		}
